@@ -1,9 +1,7 @@
-from river import tree, drift, naive_bayes, ensemble, forest
+from river import tree, drift, naive_bayes, ensemble, forest, multiclass
 from experiment import Experiment
 from joblib import Parallel, delayed
 import itertools
-
-
 from glob import glob
 import os
 from utils.csv import CSVStream
@@ -15,9 +13,11 @@ import warnings
 
 models = [
     ("HT", tree.HoeffdingTreeClassifier()),
-    ("EFHT", tree.ExtremelyFastDecisionTreeClassifier())
+    ("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
     ("SRP", ensemble.SRPClassifier()),
-    ("ARF", forest.ARFClassifier())
+    ("ARF", forest.ARFClassifier()),
+    ("OneVsAll", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
+    #("OneVsOne", multiclass.OneVsOneClassifier(tree.HoeffdingTreeClassifier())),
 
 ]
 
@@ -31,13 +31,14 @@ def task(stream_path, model, dd=None):
     model_name, model = model
     model_local = model.clone()
 
-    exp_name = "{}_{}_{}".format(model_name, stream_name)
+    exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
-    exp = Experiment(exp_name, stream_output, model_local, dd, stream, stream_size=400000)
+    if not (os.path.exists("{}/{}.csv".format(stream_output, exp_name))):
+        exp = Experiment(exp_name, stream_output, model_local, dd, stream, stream_size=400000)
 
-    exp.run()
+        exp.run()
 
-    exp.save()
+        exp.save()
 
 
 for model in models:
@@ -49,7 +50,7 @@ for model in models:
         for file in glob(os.path.join(path, EXT))
     ]
 
-    out = Parallel(n_jobs=16)(
+    out = Parallel(n_jobs=12)(
         delayed(task)(stream, model)
         for stream, model in itertools.product(streams, models)
     )
