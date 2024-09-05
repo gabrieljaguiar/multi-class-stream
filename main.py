@@ -50,7 +50,7 @@ for model in models:
         for file in glob(os.path.join(path, EXT))
     ]
 
-    out = Parallel(n_jobs=12)(
+    out = Parallel(n_jobs=1)(
         delayed(task)(stream, model)
         for stream, model in itertools.product(streams, models)
     )
