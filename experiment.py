@@ -50,7 +50,7 @@ class Experiment:
         local_drift = 0
         if type(self.stream) == SyntheticDataset:
             self.stream = self.stream.take(self.size)
-        for i, (x, y) in enumerate(self.stream):
+        for i, (x, y) in tqdm(enumerate(self.stream), total=400000):
             # print(i)
             if i > self.gracePeriod:
                 self.evaluator.addResult((x, y), self.model.predict_proba_one(x))

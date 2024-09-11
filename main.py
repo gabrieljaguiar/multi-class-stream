@@ -8,15 +8,17 @@ from utils.csv import CSVStream
 
 from copy import deepcopy
 import warnings
-
+from classifiers.drift_aware_multi_class import OneVsRestDriftAwareClassifier
+from drift_detectors.multi_class_detector import DummyDetector
 
 
 models = [
-    ("HT", tree.HoeffdingTreeClassifier()),
-    ("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
-    ("SRP", ensemble.SRPClassifier()),
-    ("ARF", forest.ARFClassifier()),
-    ("OneVsAll", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
+    #("HT", tree.HoeffdingTreeClassifier()),
+    #("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
+    #("SRP", ensemble.SRPClassifier()),
+    #("ARF", forest.ARFClassifier()),
+    #("OneVsAll", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
+    ("OneVsAll_Dummy", OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None))
     #("OneVsOne", multiclass.OneVsOneClassifier(tree.HoeffdingTreeClassifier())),
 
 ]
@@ -30,6 +32,22 @@ def task(stream_path, model, dd=None):
     
     model_name, model = model
     model_local = model.clone()
+
+    if (isinstance(model_local, OneVsRestDriftAwareClassifier)):
+        if n_class > 5:
+            drift_points = {
+                100000:[n_class-1, n_class-2],
+                200000:[n_class-1, n_class-2],
+                300000:[n_class-1, n_class-2], 
+            }
+        else:
+            drift_points = {
+                100000:[n_class-1],
+                200000:[n_class-1],
+                300000:[n_class-1], 
+            }            
+
+        model_local.driftDetector = DummyDetector(n_class, drift_points)
 
     exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
