@@ -7,11 +7,12 @@ from glob import glob
 #Plotting accuracy over time for sudden drifts
 
 classifiers = [
-    "HT",
-    "EFHT",
-    "SRP", 
-    "ARF", 
-    "OneVsAll"
+    #"HT",
+    #"EFHT",
+    #"SRP", 
+    #"ARF", 
+    "OneVsAll",
+    "OneVsAll_Dummy"
 ]
 
 number_of_classes = [5,10,15]
@@ -20,7 +21,7 @@ dfs = []
 PATH = "../output"
 for n in number_of_classes:
     for classifier in classifiers:
-        out_file = "{}/{}_swap_cluster_local_sudden_{}.csv".format(PATH, classifier, n)
+        out_file = "{}/{}_swap_cluster_global_sudden_{}.csv".format(PATH, classifier, n)
         df = pd.read_csv(out_file)
         df["classifier"] = classifier
         df["number_of_classes"] = n
