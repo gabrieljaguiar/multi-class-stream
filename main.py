@@ -9,7 +9,7 @@ from utils.csv import CSVStream
 from copy import deepcopy
 import warnings
 from classifiers.drift_aware_multi_class import OneVsRestDriftAwareClassifier
-from drift_detectors.multi_class_detector import DummyDetector
+from drift_detectors.multi_class_detector import DummyDetector, InformedDrift
 
 
 models = [
@@ -18,7 +18,7 @@ models = [
     #("SRP", ensemble.SRPClassifier()),
     #("ARF", forest.ARFClassifier()),
     #("OneVsAll", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
-    ("OneVsAll_Dummy", OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None))
+    ("OneVsAll_CIDDM", OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None))
     #("OneVsOne", multiclass.OneVsOneClassifier(tree.HoeffdingTreeClassifier())),
 
 ]
@@ -34,6 +34,7 @@ def task(stream_path, model, dd=None):
     model_local = model.clone()
 
     if (isinstance(model_local, OneVsRestDriftAwareClassifier)):
+        """
         if n_class > 5:
             drift_points = {
                 100000:[n_class-1, n_class-2],
@@ -46,8 +47,10 @@ def task(stream_path, model, dd=None):
                 200000:[n_class-1],
                 300000:[n_class-1], 
             }            
-
+       
         model_local.driftDetector = DummyDetector(n_class, drift_points)
+        """
+        model_local.driftDetector = InformedDrift(n_class)
 
     exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
