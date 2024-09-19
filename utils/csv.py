@@ -24,7 +24,7 @@ def save_stream(stream: SyntheticDataset, file: str, size: int):
 
 
 class CSVStream:
-    def __init__(self, csv_file: str, target: str = None) -> None:
+    def __init__(self, csv_file: str, target: str = None, stream_size = None) -> None:
         self.csv_file = csv_file
         self.data = pd.read_csv(self.csv_file)
         if target is None:
@@ -32,7 +32,10 @@ class CSVStream:
         self.classes = self.data[self.target].unique()
         self.n_classes = len(self.classes)
         self.n_features = self.data.shape[1] - 1
-        self.n_samples = self.data.shape[0]
+        if stream_size == None:
+            self.n_samples = self.data.shape[0]
+        else:
+            self.n_samples = stream_size
         self.index = 0
 
     def __iter__(self):

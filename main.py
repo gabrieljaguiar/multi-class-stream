@@ -18,6 +18,7 @@ models = [
     #("SRP", ensemble.SRPClassifier()),
     #("ARF", forest.ARFClassifier()),
     #("OneVsAll", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
+    #("OneVsAll_Dummy_2", OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None))
     ("OneVsAll_CIDDM", OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None))
     #("OneVsOne", multiclass.OneVsOneClassifier(tree.HoeffdingTreeClassifier())),
 
@@ -54,8 +55,8 @@ def task(stream_path, model, dd=None):
 
     exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
-    if not (os.path.exists("{}/{}.csv".format(stream_output, exp_name))):
-        exp = Experiment(exp_name, stream_output, model_local, dd, stream, stream_size=400000)
+    if (os.path.exists("{}/{}.csv".format(stream_output, exp_name))) or True:
+        exp = Experiment(exp_name, stream_output, model_local, dd, stream, stream_size=20000)
 
         exp.run()
 

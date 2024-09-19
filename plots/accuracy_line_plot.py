@@ -12,7 +12,8 @@ classifiers = [
     #"SRP", 
     #"ARF", 
     "OneVsAll",
-    "OneVsAll_Dummy"
+    "OneVsAll_Dummy",
+    "OneVsAll_CIDDM"
 ]
 
 number_of_classes = [5,10,15]

@@ -16,7 +16,7 @@ class MultiDetector(DriftAndWarningDetector):
 
 class InformedDrift(MultiDetector):
     def __init__(
-        self, n_classes: int, alpha:float = 0.2,window_size: int = 100, grace_period: int = 5, whole_drift: bool = False
+        self, n_classes: int, alpha:float = 0.2,window_size: int = 500, grace_period: int = 10, whole_drift: bool = False
     ):
         super().__init__()
         self.classifiers = {}

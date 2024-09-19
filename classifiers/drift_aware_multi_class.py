@@ -7,13 +7,17 @@ class OneVsRestDriftAwareClassifier(OneVsRestClassifier):
     def __init__(self, classifier: Classifier, driftDetector:InformedDrift):
         super().__init__(classifier)
         self.driftDetector = driftDetector
+        self.idx = 0
     
     def learn_one(self, x, y, **kwargs):
-        self.driftDetector.update(x,y)
+        x_feat = x.copy()
+        self.driftDetector.update(x_feat,y)
         if (any(self.driftDetector.drift)):
             affected_classes = np.where(self.driftDetector.drift)[0]
+            print ("Drift detected in class {} in {}".format(affected_classes, self.idx))
             for drifted_classes in affected_classes:
                 del self.classifiers[drifted_classes]
 
             #print (self.classifiers)
+        self.idx += 1
         super().learn_one(x, y, **kwargs)
