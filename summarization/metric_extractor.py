@@ -21,7 +21,7 @@ for output_file in output_files:
     
     df = pd.read_csv(output_file)
 
-    drifted_df = df.iloc[np.r_[(90000/500):(110000/500), (190000/500):(210000/500), (290000/500):(310000/500)]]
+    drifted_df = df.iloc[np.r_[(100000/500):(150000/500), (200000/500):(250000/500), (300000/500):(350000/500)]]
 
     acc = df["accuracy"].mean()
     gmean = df["gmean"].mean()

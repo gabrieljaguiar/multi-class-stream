@@ -5,8 +5,9 @@ from evaluators.multi_class_evaluator import MultiClassEvaluator
 #from drift_detectors import InformedDrift
 import pandas as pd
 from tqdm import tqdm
+import sys
 #from drift_detectors import DDM_OCI, MCADWIN
-
+import time
 # add class imbalance monitoring
 
 
@@ -50,6 +51,7 @@ class Experiment:
         local_drift = 0
         if type(self.stream) == SyntheticDataset:
             self.stream = self.stream.take(self.size)
+        start_time = time.time()
         for i, (x, y) in tqdm(enumerate(self.stream), total=400000):
             # print(i)
             if i > self.gracePeriod:
@@ -69,11 +71,14 @@ class Experiment:
 
                 if (i + 1) % self.evaluationWindow == 0:
                     #print (i)
+                    end_time = time.time()
                     metric = {
                         "idx": i + 1,
                         "accuracy": self.evaluator.getAccuracy(),
                         "gmean": self.evaluator.getGMean(),
                         "kappa": self.evaluator.getKappa(),
+                        "mem_usage": sys.getsizeof(self.model),
+                        "cpu_time": (end_time - start_time)
                     }
 
                     for c in range(0, self.stream.n_classes):

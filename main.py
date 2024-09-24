@@ -13,16 +13,34 @@ from drift_detectors.multi_class_detector import DummyDetector, InformedDrift
 
 
 models = [
-    #("HT", tree.HoeffdingTreeClassifier()),
-    #("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
-    #("SRP", ensemble.SRPClassifier()),
-    #("ARF", forest.ARFClassifier()),
-    #("OneVsAll", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
-    #("OneVsAll_Dummy_2", OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None))
-    ("OneVsAll_CIDDM", OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None))
-    #("OneVsOne", multiclass.OneVsOneClassifier(tree.HoeffdingTreeClassifier())),
-
+    ("HT", tree.HoeffdingTreeClassifier()),
+    (
+        "ADWIN-HT",
+        drift.DriftRetrainingClassifier(
+            tree.HoeffdingAdaptiveTreeClassifier(), drift_detector=drift.ADWIN()
+        ),
+    )("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
+    ("SRP", ensemble.SRPClassifier()),
+    ("ARF", forest.ARFClassifier()),
+    ("LB", ensemble.LeveragingBaggingClassifier()),
+    ("ADWINBagging", ensemble.ADWINBaggingClassifier()),
+    ("AdaBoost", ensemble.AdaBoostClassifier()),
+    ("OneVsAll-NC", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
+    (
+        "OneVsAll-ADWIN",
+        drift.DriftRetrainingClassifier(
+            multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier()),
+            drift_detector=drift.ADWIN(),
+        ),
+    )(
+        "OneVsAll-GT",
+        OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None),
+    )(
+        "OneVsAll-CIDDM",
+        OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None),
+    ),
 ]
+
 
 def task(stream_path, model, dd=None):
     warnings.filterwarnings("ignore")
@@ -30,33 +48,35 @@ def task(stream_path, model, dd=None):
     stream_name = os.path.splitext(os.path.basename(stream_path))[0]
     stream_output = os.path.dirname(stream_path).replace("datasets", "output")
     n_class = int(stream_name.split("_")[-1])
-    
+
     model_name, model = model
     model_local = model.clone()
 
-    if (isinstance(model_local, OneVsRestDriftAwareClassifier)):
-        """
-        if n_class > 5:
-            drift_points = {
-                100000:[n_class-1, n_class-2],
-                200000:[n_class-1, n_class-2],
-                300000:[n_class-1, n_class-2], 
-            }
+    if isinstance(model_local, OneVsRestDriftAwareClassifier):
+        if model_name == "OneVsAll-GT":
+            if n_class > 5:
+                drift_points = {
+                    100000: [n_class - 1, n_class - 2],
+                    200000: [n_class - 1, n_class - 2],
+                    300000: [n_class - 1, n_class - 2],
+                }
+            else:
+                drift_points = {
+                    100000: [n_class - 1],
+                    200000: [n_class - 1],
+                    300000: [n_class - 1],
+                }
+
+            model_local.driftDetector = DummyDetector(n_class, drift_points)
         else:
-            drift_points = {
-                100000:[n_class-1],
-                200000:[n_class-1],
-                300000:[n_class-1], 
-            }            
-       
-        model_local.driftDetector = DummyDetector(n_class, drift_points)
-        """
-        model_local.driftDetector = InformedDrift(n_class)
+            model_local.driftDetector = InformedDrift(n_class)
 
     exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
     if (os.path.exists("{}/{}.csv".format(stream_output, exp_name))) or True:
-        exp = Experiment(exp_name, stream_output, model_local, dd, stream, stream_size=20000)
+        exp = Experiment(
+            exp_name, stream_output, model_local, dd, stream, stream_size=20000
+        )
 
         exp.run()
 

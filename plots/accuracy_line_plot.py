@@ -13,7 +13,8 @@ classifiers = [
     #"ARF", 
     "OneVsAll",
     "OneVsAll_Dummy",
-    "OneVsAll_CIDDM"
+    "OneVsAll_CIDDM",
+    "OneVsAll_CIDDM-mod"
 ]
 
 number_of_classes = [5,10,15]
