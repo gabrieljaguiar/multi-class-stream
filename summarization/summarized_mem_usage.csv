@@ -1,0 +1,13 @@
+id,n_class,ADWINBagging,ARF,AdaBoost,DDM-HT,EFHT,HT,LB,OneVsAll-CIDDM,OneVsAll-DDM,OneVsAll-GT,OneVsAll-NC,SRP
+swap_cluster_global_gradual,10,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_global_gradual,15,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_global_gradual,5,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_global_sudden,10,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_global_sudden,15,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_global_sudden,5,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_local_gradual,10,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_local_gradual,15,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_local_gradual,5,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_local_sudden,10,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_local_sudden,15,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+swap_cluster_local_sudden,5,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
