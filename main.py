@@ -15,27 +15,30 @@ from drift_detectors.multi_class_detector import DummyDetector, InformedDrift
 models = [
     ("HT", tree.HoeffdingTreeClassifier()),
     (
-        "ADWIN-HT",
+        "DDM-HT",
         drift.DriftRetrainingClassifier(
-            tree.HoeffdingAdaptiveTreeClassifier(), drift_detector=drift.ADWIN()
+            tree.HoeffdingAdaptiveTreeClassifier(), drift_detector=drift.binary.DDM()
         ),
-    )("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
+    ),
+    ("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
     ("SRP", ensemble.SRPClassifier()),
     ("ARF", forest.ARFClassifier()),
-    ("LB", ensemble.LeveragingBaggingClassifier()),
-    ("ADWINBagging", ensemble.ADWINBaggingClassifier()),
-    ("AdaBoost", ensemble.AdaBoostClassifier()),
+    ("LB", ensemble.LeveragingBaggingClassifier(model=tree.HoeffdingTreeClassifier())),
+    ("ADWINBagging", ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier())),
+    ("AdaBoost", ensemble.AdaBoostClassifier(model=tree.HoeffdingTreeClassifier())),
     ("OneVsAll-NC", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
     (
-        "OneVsAll-ADWIN",
+        "OneVsAll-DDM",
         drift.DriftRetrainingClassifier(
             multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier()),
-            drift_detector=drift.ADWIN(),
+            drift_detector=drift.binary.DDM(),
         ),
-    )(
+    ),
+    (
         "OneVsAll-GT",
         OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None),
-    )(
+    ),
+    (
         "OneVsAll-CIDDM",
         OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None),
     ),
@@ -73,9 +76,9 @@ def task(stream_path, model, dd=None):
 
     exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
-    if (os.path.exists("{}/{}.csv".format(stream_output, exp_name))) or True:
+    if not (os.path.exists("{}/{}.csv".format(stream_output, exp_name))): #or True:
         exp = Experiment(
-            exp_name, stream_output, model_local, dd, stream, stream_size=20000
+            exp_name, stream_output, model_local, dd, stream, stream_size=400000
         )
 
         exp.run()
@@ -88,11 +91,10 @@ for model in models:
     EXT = "*.csv"
     streams = [
         file
-        for path, subdir, files in os.walk(PATH)
-        for file in glob(os.path.join(path, EXT))
+        for file in glob(os.path.join(PATH, EXT))
     ]
 
-    out = Parallel(n_jobs=1)(
+    out = Parallel(n_jobs=4)(
         delayed(task)(stream, model)
         for stream, model in itertools.product(streams, models)
     )
