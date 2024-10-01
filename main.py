@@ -20,10 +20,16 @@ models = [
             tree.HoeffdingAdaptiveTreeClassifier(), drift_detector=drift.binary.DDM()
         ),
     ),
+    (
+        "GT-HT",
+        drift.DriftRetrainingClassifier(
+            tree.HoeffdingAdaptiveTreeClassifier(), drift_detector=drift.DummyDriftDetector(t_0=100000)
+        ),
+    ),
     ("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
     ("SRP", ensemble.SRPClassifier()),
     ("ARF", forest.ARFClassifier()),
-    ("LB", ensemble.LeveragingBaggingClassifier(model=tree.HoeffdingTreeClassifier())),
+    #("LB", ensemble.LeveragingBaggingClassifier(model=tree.HoeffdingTreeClassifier())),
     ("ADWINBagging", ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier())),
     ("AdaBoost", ensemble.AdaBoostClassifier(model=tree.HoeffdingTreeClassifier())),
     ("OneVsAll-NC", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
