@@ -16,10 +16,16 @@ def resample(dataframe):
     X_res_4, y_res_4 = sm_4.fit_resample(X,y)
     X_res_5, y_res_5 = sm_5.fit_resample(X,y)
     
-    X_res = pd.concat([X_res_1, X_res_2, X_res_3, X_res_4, X_res_5], axis=0)
-    y_res = pd.concat([y_res_1, y_res_2, y_res_3, y_res_4, y_res_5], axis=0)
+    X_res_partial = pd.concat([X_res_1, X_res_2, X_res_3, X_res_4, X_res_5], axis=0)
+    y_res_partial = pd.concat([y_res_1, y_res_2, y_res_3, y_res_4, y_res_5], axis=0)
     
-    concept_resamp = pd.concat([X_res, y_res], axis = 1)
+    X_res_all, y_res_all = sm_5.fit_resample(X_res_partial, y_res_partial)
+    X_res_all = pd.concat([X_res_all, X_res_partial], axis=0)
+    y_res_all = pd.concat([y_res_all, y_res_partial], axis=0)
+
+    
+    concept_resamp = pd.concat([X_res_all, y_res_all], axis = 1)
+    
     return pd.concat([dataframe, concept_resamp], axis = 0).sample(frac=1, random_state=42).reset_index(drop=True)
 
 concepts_breaks = [14352, 19500, 33240, 38682, 39510]

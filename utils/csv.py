@@ -24,7 +24,7 @@ def save_stream(stream: SyntheticDataset, file: str, size: int):
 
 
 class CSVStream:
-    def __init__(self, csv_file: str, target: str = None, stream_size = None) -> None:
+    def __init__(self, csv_file: str, target: str = None, stream_size = None, loop=False) -> None:
         self.csv_file = csv_file
         self.data = pd.read_csv(self.csv_file)
         if target is None:
@@ -37,6 +37,7 @@ class CSVStream:
         else:
             self.n_samples = stream_size
         self.index = 0
+        self.loop = loop
 
     def __iter__(self):
         while True:
@@ -45,5 +46,8 @@ class CSVStream:
             y = self.data.iloc[self.index, -1]
             self.index += 1
             if self.index >= self.n_samples:
-                break
+                if self.loop:
+                    self.index = 0
+                else:
+                    break
             yield x, y
