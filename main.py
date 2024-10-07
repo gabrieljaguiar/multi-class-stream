@@ -92,15 +92,15 @@ def task(stream_path, model, dd=None):
         exp.save()
 
 
-for model in models:
-    PATH = "./datasets/"
-    EXT = "*.csv"
-    streams = [
+
+PATH = "./datasets/"
+EXT = "*.csv"
+streams = [
         file
         for file in glob(os.path.join(PATH, EXT))
     ]
 
-    out = Parallel(n_jobs=4)(
+out = Parallel(n_jobs=4)(
         delayed(task)(stream, model)
         for stream, model in itertools.product(streams, models)
     )

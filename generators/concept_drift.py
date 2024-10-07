@@ -17,6 +17,7 @@ class RealWorldConceptDriftStream(datasets.base.SyntheticDataset):
         size: int,
         angle: float = 0,
         seed: int = 42,
+        n_classes:int = 2,
     ):
         self.initialStream = CSVStream(initialStream_path, loop=True)
         self.nextStream = CSVStream(nextStream_path, loop=True)
@@ -29,6 +30,7 @@ class RealWorldConceptDriftStream(datasets.base.SyntheticDataset):
         self.name = self.initialStream.__class__
         self.seed = seed
         self._rng = random.Random(seed)
+        self.n_classes = n_classes
 
     def __str__(self):
         out = "<object, at 0x{}>".format(id(self))

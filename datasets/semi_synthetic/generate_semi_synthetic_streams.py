@@ -34,6 +34,11 @@ df = pd.read_csv("./INSECTS abrupt_balanced.csv", header=None)
 
 df.columns = ["f_{}".format(i) for i in range(len(df.columns) - 1)] + ["class"]
 
+df["class"] = df["class"].astype('str')
+df["class"] = df["class"].astype('category')
+df["class"] = df["class"].cat.codes
+
+
 concept_1 = df.iloc[0:concepts_breaks[0]]
 concept_2 = df.iloc[concepts_breaks[0]:concepts_breaks[1]]
 concept_3 = df.iloc[concepts_breaks[1]:concepts_breaks[2]]

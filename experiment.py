@@ -52,7 +52,7 @@ class Experiment:
         if type(self.stream) == SyntheticDataset:
             self.stream = self.stream.take(self.size)
         start_time = time.time()
-        for i, (x, y) in tqdm(enumerate(self.stream), total=400000):
+        for i, (x, y) in tqdm(enumerate(self.stream), total=self.size):
             # print(i)
             if i > self.gracePeriod:
                 self.evaluator.addResult((x, y), self.model.predict_proba_one(x))
