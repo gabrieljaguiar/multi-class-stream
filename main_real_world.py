@@ -25,15 +25,15 @@ models = [
             tree.HoeffdingAdaptiveTreeClassifier(), drift_detector=drift.binary.DDM()
         ),
     ),
-    ("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
-    ("SRP", ensemble.SRPClassifier()),
+    #("EFHT", tree.ExtremelyFastDecisionTreeClassifier()),
+    #("SRP", ensemble.SRPClassifier()),
     ("ARF", forest.ARFClassifier()),
     # ("LB", ensemble.LeveragingBaggingClassifier(model=tree.HoeffdingTreeClassifier())),
-    (
-        "ADWINBagging",
-        ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier()),
-    ),
-    ("AdaBoost", ensemble.AdaBoostClassifier(model=tree.HoeffdingTreeClassifier())),
+    #(
+    #    "ADWINBagging",
+    #    ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier()),
+    #),
+    #("AdaBoost", ensemble.AdaBoostClassifier(model=tree.HoeffdingTreeClassifier())),
     ("OneVsAll-NC", multiclass.OneVsRestClassifier(tree.HoeffdingTreeClassifier())),
     (
         "OneVsAll-DDM",
@@ -101,6 +101,22 @@ streams = [
             "./datasets/semi_synthetic/semi_synth_concept_3.csv",
         ],
     ),
+        (
+        "semi_synth_6_to_2_sudden",
+        1,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_6.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_2.csv",
+        ],
+    ),
+    (
+        "semi_synth_6_to_2_gradual",
+        15000,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_6.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_2.csv",
+        ],
+    ),
 ]
 
 
@@ -110,10 +126,12 @@ def task(stream_path, model, dd=None):
     stream_output = "./output/semi-synth/"
     n_class = 6
 
+    stream_name = stream_name + "_global_change"
+
     stream = RealWorldConceptDriftStream(
         stream_paths[0],
         stream_paths[1],
-        classes_affected=[5], width=stream_width, position=750000, size=125000, n_classes=6
+        classes_affected=[0,1,2,3,4,5], width=stream_width, position=750000, size=125000, n_classes=6
     )
     #print (model)
     model_name, model = model
@@ -143,7 +161,7 @@ def task(stream_path, model, dd=None):
 
 
 
-out = Parallel(n_jobs=1)(
+out = Parallel(n_jobs=4)(
         delayed(task)(stream, model)
         for stream, model in itertools.product(streams, models)
     )

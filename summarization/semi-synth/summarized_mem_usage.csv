@@ -1,0 +1,7 @@
+id,n_class,ADWINBagging,ARF,AdaBoost,DDM-HT,EFHT,HT,OneVsAll-CIDDM,OneVsAll-DDM,OneVsAll-GT,OneVsAll-NC,SRP
+synth_1_to_3_gradual.csv,6,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+synth_1_to_3_sudden.csv,6,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+synth_1_to_6_gradual.csv,6,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+synth_1_to_6_sudden.csv,6,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+synth_6_to_3_gradual.csv,6,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
+synth_6_to_3_sudden.csv,6,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0,56.0
