@@ -28,6 +28,15 @@ def resample(dataframe):
     
     return pd.concat([dataframe, concept_resamp], axis = 0).sample(frac=1, random_state=42).reset_index(drop=True)
 
+def swap(dataframe, classes:list):
+    c_1 = classes[0]
+    c_2 = classes[1]
+    dataframe["class_2"] = dataframe["class"]
+    dataframe.loc[dataframe["class_2"] == c_1, ["class"]] = c_2
+    dataframe.loc[dataframe["class_2"] == c_2, ["class"]] = c_1
+    dataframe.drop(["class_2"], axis=1, inplace=True)
+    return dataframe
+
 concepts_breaks = [14352, 19500, 33240, 38682, 39510]
 
 df = pd.read_csv("./INSECTS abrupt_balanced.csv", header=None)
@@ -55,8 +64,19 @@ concept_5_semi_synth = resample(concept_5)
 concept_6_semi_synth = resample(concept_6)
 
 concept_1_semi_synth.to_csv("semi_synth_concept_1.csv", index=False)
+swap(concept_1_semi_synth, [4,5]).to_csv("semi_synth_concept_1_swap.csv", index=False)
+
 concept_2_semi_synth.to_csv("semi_synth_concept_2.csv", index=False)
+swap(concept_2_semi_synth, [4,5]).to_csv("semi_synth_concept_2_swap.csv", index=False)
+
 concept_3_semi_synth.to_csv("semi_synth_concept_3.csv", index=False)
+swap(concept_3_semi_synth, [4,5]).to_csv("semi_synth_concept_3_swap.csv", index=False)
+
 concept_4_semi_synth.to_csv("semi_synth_concept_4.csv", index=False)
+swap(concept_4_semi_synth, [4,5]).to_csv("semi_synth_concept_4_swap.csv", index=False)
+
 concept_5_semi_synth.to_csv("semi_synth_concept_5.csv", index=False)
+swap(concept_5_semi_synth, [4,5]).to_csv("semi_synth_concept_5_swap.csv", index=False)
+
 concept_6_semi_synth.to_csv("semi_synth_concept_6.csv", index=False)
+swap(concept_6_semi_synth, [4,5]).to_csv("semi_synth_concept_6_swap.csv", index=False)

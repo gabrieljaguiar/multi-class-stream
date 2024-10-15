@@ -20,12 +20,13 @@ models = [
 
 
 streams = [
-    "semi_synth_1_to_3_gradual",
-    "semi_synth_1_to_3_sudden",
-    "semi_synth_1_to_6_gradual",
-    "semi_synth_1_to_6_sudden",
-    "semi_synth_6_to_3_gradual",
-    "semi_synth_6_to_3_sudden",
+    #"semi_synth_1_to_3_gradual",
+    #"semi_synth_1_to_3_sudden",
+    #"semi_synth_1_to_6_gradual",
+    #"semi_synth_1_to_6_sudden",
+    #"semi_synth_6_to_3_gradual",
+    #"semi_synth_6_to_3_sudden",
+    "semi_synth_6_to_3_sudden_global_change",
 ]
 
 PATH = "../output/semi-synth/"

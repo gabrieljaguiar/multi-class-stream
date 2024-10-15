@@ -19,7 +19,7 @@ for output_file in output_files:
     if classifier == "OneVsAll":
         classifier = "_".join(output_file.split("_")[0:2]).split("/")[-1]
     n_class = 6
-    identifier = "_".join(output_file.split("_")[-5:])
+    identifier = "_".join(output_file.split("_")[-6:])
     
     
     df = pd.read_csv(output_file)

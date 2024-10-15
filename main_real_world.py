@@ -54,67 +54,99 @@ models = [
 
 streams = [
     (
-        "semi_synth_1_to_3_sudden",
+        "semi_synth_1_sudden",
         1,
         [
             "./datasets/semi_synthetic/semi_synth_concept_1.csv",
-            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_1_swap.csv",
         ],
     ),
     (
-        "semi_synth_1_to_3_gradual",
+        "semi_synth_1_gradual",
         15000,
         [
             "./datasets/semi_synthetic/semi_synth_concept_1.csv",
-            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_1_swap.csv",
         ],
     ),
     (
-        "semi_synth_1_to_6_sudden",
+        "semi_synth_2_sudden",
         1,
         [
-            "./datasets/semi_synthetic/semi_synth_concept_1.csv",
-            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
-        ],
-    ),
-    (
-        "semi_synth_1_to_6_gradual",
-        15000,
-        [
-            "./datasets/semi_synthetic/semi_synth_concept_1.csv",
-            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
-        ],
-    ),
-    (
-        "semi_synth_6_to_3_sudden",
-        1,
-        [
-            "./datasets/semi_synthetic/semi_synth_concept_6.csv",
-            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
-        ],
-    ),
-    (
-        "semi_synth_6_to_3_gradual",
-        15000,
-        [
-            "./datasets/semi_synthetic/semi_synth_concept_6.csv",
-            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
-        ],
-    ),
-        (
-        "semi_synth_6_to_2_sudden",
-        1,
-        [
-            "./datasets/semi_synthetic/semi_synth_concept_6.csv",
             "./datasets/semi_synthetic/semi_synth_concept_2.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_2_swap.csv",
         ],
     ),
     (
-        "semi_synth_6_to_2_gradual",
+        "semi_synth_2_gradual",
+        15000,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_2.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_2_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_3_sudden",
+        1,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_3_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_3_gradual",
+        15000,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_3.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_3_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_4_sudden",
+        1,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_4.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_4_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_4_gradual",
+        15000,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_4.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_4_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_5_sudden",
+        1,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_5.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_5_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_5_gradual",
+        15000,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_5.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_5_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_6_sudden",
+        1,
+        [
+            "./datasets/semi_synthetic/semi_synth_concept_6.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_6_swap.csv",
+        ],
+    ),
+    (
+        "semi_synth_6_gradual",
         15000,
         [
             "./datasets/semi_synthetic/semi_synth_concept_6.csv",
-            "./datasets/semi_synthetic/semi_synth_concept_2.csv",
+            "./datasets/semi_synthetic/semi_synth_concept_6_swap.csv",
         ],
     ),
 ]
@@ -126,7 +158,6 @@ def task(stream_path, model, dd=None):
     stream_output = "./output/semi-synth/"
     n_class = 6
 
-    stream_name = stream_name + "_global_change"
 
     stream = RealWorldConceptDriftStream(
         stream_paths[0],
