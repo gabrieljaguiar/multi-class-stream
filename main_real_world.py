@@ -162,7 +162,7 @@ def task(stream_path, model, dd=None):
     stream = RealWorldConceptDriftStream(
         stream_paths[0],
         stream_paths[1],
-        classes_affected=[0,1,2,3,4,5], width=stream_width, position=750000, size=125000, n_classes=6
+        classes_affected=[0,1,2,3,4,5], width=stream_width, position=75000, size=125000, n_classes=6
     )
     #print (model)
     model_name, model = model
@@ -192,7 +192,7 @@ def task(stream_path, model, dd=None):
 
 
 
-out = Parallel(n_jobs=4)(
+out = Parallel(n_jobs=8)(
         delayed(task)(stream, model)
         for stream, model in itertools.product(streams, models)
     )

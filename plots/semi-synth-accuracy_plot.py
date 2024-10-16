@@ -11,7 +11,7 @@ models = [
     #"DDM-HT",
     #"EFHT",
     "HT",
-    #"OneVsAll-CIDDM",
+    "OneVsAll-CIDDM",
     #"OneVsAll-DDM",
     "OneVsAll-GT",
     "OneVsAll-NC",
@@ -26,7 +26,7 @@ streams = [
     #"semi_synth_1_to_6_sudden",
     #"semi_synth_6_to_3_gradual",
     #"semi_synth_6_to_3_sudden",
-    "semi_synth_6_to_3_sudden_global_change",
+    "semi_synth_1_sudden",
 ]
 
 PATH = "../output/semi-synth/"

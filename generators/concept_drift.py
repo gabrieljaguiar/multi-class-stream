@@ -58,6 +58,7 @@ class RealWorldConceptDriftStream(datasets.base.SyntheticDataset):
                 #print (nextElement)
                 y_element = nextElement[1]
                 if (y_element in self.classes_affected) and (self._rng.random() < driftProbability):
+                    #print ("drifted")
                     nextElement = next(self.nextStreamIterator)
                     while nextElement[1] != y_element:
                         nextElement = next(self.nextStreamIterator)

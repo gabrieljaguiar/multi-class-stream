@@ -11,8 +11,9 @@ import warnings
 from classifiers.drift_aware_multi_class import OneVsRestDriftAwareClassifier
 from drift_detectors.multi_class_detector import DummyDetector, InformedDrift
 
-
+"""
 models = [
+ 
     ("HT", tree.HoeffdingTreeClassifier()),
     (
         "DDM-HT",
@@ -48,6 +49,24 @@ models = [
         "OneVsAll-CIDDM",
         OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None),
     ),
+    
+
+]
+"""
+
+models = [
+    (
+        "Bagging-CIDDM",
+        ensemble.BaggingClassifier(
+            OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None)
+        ),
+    ),
+    (
+        "Bagging-GT",
+        ensemble.BaggingClassifier(
+            OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None)
+        ),
+    ),
 ]
 
 
@@ -61,8 +80,10 @@ def task(stream_path, model, dd=None):
     model_name, model = model
     model_local = model.clone()
 
-    if isinstance(model_local, OneVsRestDriftAwareClassifier):
-        if model_name == "OneVsAll-GT":
+    if isinstance(model_local, OneVsRestDriftAwareClassifier) or isinstance(
+        model_local, ensemble.BaggingClassifier
+    ):
+        if model_name == "OneVsAll-GT" or model_name == "Bagging-GT":
             if n_class > 5:
                 drift_points = {
                     100000: [n_class - 1, n_class - 2],
@@ -75,14 +96,28 @@ def task(stream_path, model, dd=None):
                     200000: [n_class - 1],
                     300000: [n_class - 1],
                 }
-
-            model_local.driftDetector = DummyDetector(n_class, drift_points)
+            if isinstance(model_local, ensemble.BaggingClassifier):
+                model_local = ensemble.BaggingClassifier(
+                    OneVsRestDriftAwareClassifier(
+                        tree.HoeffdingTreeClassifier(),
+                        DummyDetector(n_class, drift_points),
+                    )
+                )
+            else:
+                model_local.driftDetector = DummyDetector(n_class, drift_points)
         else:
-            model_local.driftDetector = InformedDrift(n_class)
+            if isinstance(model_local, ensemble.BaggingClassifier):
+                model_local = ensemble.BaggingClassifier(
+                    OneVsRestDriftAwareClassifier(
+                        tree.HoeffdingTreeClassifier(), InformedDrift(n_class)
+                    )
+                )
+            else:
+                model_local.driftDetector = InformedDrift(n_class)
 
     exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
-    if not (os.path.exists("{}/{}.csv".format(stream_output, exp_name))): #or True:
+    if not (os.path.exists("{}/{}.csv".format(stream_output, exp_name))):  # or True:
         exp = Experiment(
             exp_name, stream_output, model_local, dd, stream, stream_size=400000
         )
@@ -92,15 +127,10 @@ def task(stream_path, model, dd=None):
         exp.save()
 
 
-
 PATH = "./datasets/"
 EXT = "*.csv"
-streams = [
-        file
-        for file in glob(os.path.join(PATH, EXT))
-    ]
+streams = [file for file in glob(os.path.join(PATH, EXT))]
 
 out = Parallel(n_jobs=4)(
-        delayed(task)(stream, model)
-        for stream, model in itertools.product(streams, models)
-    )
+    delayed(task)(stream, model) for stream, model in itertools.product(streams, models)
+)
