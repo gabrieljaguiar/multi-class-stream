@@ -3,7 +3,7 @@ from river.multiclass import OneVsRestClassifier
 from drift_detectors.multi_class_detector import InformedDrift
 import numpy as np
 from collections import deque
-
+from river import ensemble
 class OneVsRestDriftAwareClassifier(OneVsRestClassifier):
     def __init__(self, classifier: Classifier, driftDetector:InformedDrift):
         super().__init__(classifier)
@@ -32,3 +32,11 @@ class OneVsRestDriftAwareClassifier(OneVsRestClassifier):
             #print (self.classifiers)
         self.idx += 1
         super().learn_one(x, y, **kwargs)
+
+    def clone(self, new_params = None, include_attributes=False):
+        if new_params is None:
+            new_params = {}
+        new_drift_detector = self.driftDetector.clone()
+        new_params["driftDetector"] = new_drift_detector 
+        return super().clone(new_params, include_attributes)
+        

@@ -19,6 +19,7 @@ class InformedDrift(MultiDetector):
         self, n_classes: int, alpha:float = 0.2,window_size: int = 500, grace_period: int = 10, whole_drift: bool = False
     ):
         super().__init__()
+        self.n_classes = n_classes
         self.classifiers = {}
         self.windows = {
             key: collections.deque(maxlen=window_size) for key in range(0, n_classes)
@@ -102,6 +103,9 @@ class InformedDrift(MultiDetector):
             self.windows[y].clear()
             
         self._drift_detected = False
+    
+    def clone(self, new_params = None, include_attributes=False):
+        return super().clone(new_params, True)
 
 class DummyDetector(MultiDetector):
     def __init__(self, n_classes:int, driftPositions: dict):

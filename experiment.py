@@ -9,7 +9,7 @@ import sys
 #from drift_detectors import DDM_OCI, MCADWIN
 import time
 # add class imbalance monitoring
-
+import pympler
 
 class Experiment:
     def __init__(
@@ -77,7 +77,7 @@ class Experiment:
                         "accuracy": self.evaluator.getAccuracy(),
                         "gmean": self.evaluator.getGMean(),
                         "kappa": self.evaluator.getKappa(),
-                        "mem_usage": sys.getsizeof(self.model),
+                        "mem_usage": pympler.getsizeof(self.model),
                         "cpu_time": (end_time - start_time)
                     }
 

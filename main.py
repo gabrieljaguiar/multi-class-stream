@@ -11,7 +11,6 @@ import warnings
 from classifiers.drift_aware_multi_class import OneVsRestDriftAwareClassifier
 from drift_detectors.multi_class_detector import DummyDetector, InformedDrift
 
-"""
 models = [
  
     ("HT", tree.HoeffdingTreeClassifier()),
@@ -49,24 +48,19 @@ models = [
         "OneVsAll-CIDDM",
         OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None),
     ),
-    
-
-]
-"""
-
-models = [
     (
         "Bagging-CIDDM",
         ensemble.BaggingClassifier(
-            OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None)
+            OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), drift.DummyDriftDetector())
         ),
     ),
     (
         "Bagging-GT",
         ensemble.BaggingClassifier(
-            OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), None)
+            OneVsRestDriftAwareClassifier(tree.HoeffdingTreeClassifier(), drift.DummyDriftDetector())
         ),
     ),
+
 ]
 
 
@@ -109,11 +103,11 @@ def task(stream_path, model, dd=None):
             if isinstance(model_local, ensemble.BaggingClassifier):
                 model_local = ensemble.BaggingClassifier(
                     OneVsRestDriftAwareClassifier(
-                        tree.HoeffdingTreeClassifier(), InformedDrift(n_class)
+                        tree.HoeffdingTreeClassifier(), InformedDrift(n_classes=n_class)
                     )
                 )
             else:
-                model_local.driftDetector = InformedDrift(n_class)
+                model_local.driftDetector = InformedDrift(n_classes=n_class)
 
     exp_name = "{}_{}".format(model_name, stream_name)
     print("Running {}...".format(exp_name))
@@ -131,6 +125,6 @@ PATH = "./datasets/"
 EXT = "*.csv"
 streams = [file for file in glob(os.path.join(PATH, EXT))]
 
-out = Parallel(n_jobs=4)(
+out = Parallel(n_jobs=1)(
     delayed(task)(stream, model) for stream, model in itertools.product(streams, models)
 )
