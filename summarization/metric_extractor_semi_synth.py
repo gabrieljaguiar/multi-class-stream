@@ -13,13 +13,14 @@ output_files = glob("../output/semi-synth/*.csv")
 results = []
 
 for output_file in output_files:
-    print (output_file)
-    classifier = output_file.split("_")[0].split("/")[-1]
+    file_name = os.path.splitext(os.path.basename(output_file))[0]
+    classifier = file_name.split("_")[0].split("/")[-1]
     print (classifier)
-    if classifier == "OneVsAll":
-        classifier = "_".join(output_file.split("_")[0:2]).split("/")[-1]
+    #if classifier == "OneVsAll":
+    #    classifier = "_".join(file_name.split("_")[0:2]).split("/")[-1]
     n_class = 6
-    identifier = "_".join(output_file.split("_")[-6:])
+    identifier = "_".join(file_name.split("_")[1:])
+    print (identifier)
     
     
     df = pd.read_csv(output_file)
@@ -30,7 +31,7 @@ for output_file in output_files:
     gmean = df["gmean"].mean()
     kappa = df["kappa"].mean()
     gmean_affected = df["class_{}".format(int(n_class)-1)].mean()
-    mem_used = df["mem_usage"].mean()
+    mem_used = df["mem_usage"].tail(1).values[0] / 1000000
     cpu_time = df["cpu_time"].tail(1).values[0]
     
     acc_drifted = drifted_df["accuracy"].mean()
