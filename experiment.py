@@ -1,3 +1,4 @@
+import pympler.asizeof
 from river.datasets.base import SyntheticDataset
 from river.base import DriftDetector, Classifier
 from river.tree import HoeffdingAdaptiveTreeClassifier
@@ -77,7 +78,7 @@ class Experiment:
                         "accuracy": self.evaluator.getAccuracy(),
                         "gmean": self.evaluator.getGMean(),
                         "kappa": self.evaluator.getKappa(),
-                        "mem_usage": pympler.getsizeof(self.model),
+                        "mem_usage": pympler.asizeof.asizeof(self.model),
                         "cpu_time": (end_time - start_time)
                     }
 

@@ -63,6 +63,7 @@ models = [
 
 ]
 
+models = [("ADWINBagging", ensemble.ADWINBaggingClassifier(model=tree.HoeffdingTreeClassifier()))]
 
 def task(stream_path, model, dd=None):
     warnings.filterwarnings("ignore")
@@ -125,6 +126,6 @@ PATH = "./datasets/"
 EXT = "*.csv"
 streams = [file for file in glob(os.path.join(PATH, EXT))]
 
-out = Parallel(n_jobs=1)(
+out = Parallel(n_jobs=8)(
     delayed(task)(stream, model) for stream, model in itertools.product(streams, models)
 )
