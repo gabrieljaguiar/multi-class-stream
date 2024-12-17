@@ -16,24 +16,55 @@ onevall_models = [
     "OneVsAll-CIDDM",
 ]
 
+domain_ova = [
+    #"OvR-DA (GT)",
+    "OvR (NC)",
+    "OvR (DDM)",
+    "OvR-DA (GT)",
+    "OvR-DA"
+]
+
+
 tree_models = [
-    "OneVsAll-GT",
+    #"OneVsAll-GT",
     "OneVsAll-CIDDM",
     "HT",
     "DDM-HT",
     "EFHT",
 ]
 
+domain_tree = [
+    #"OvR-DA (GT)",
+    "OvR-DA",
+    "HT",
+    "HT (DDM)",
+    "EFHT"
+]
+
+
 ensemble_comparison = [
-    "OneVsAll-CIDDM", "Bagging-CIDDM",
-    "Bagging-GT",
+    "OneVsAll-CIDDM", 
+    "Bagging-CIDDM",
+    #"Bagging-GT",
     "SRP",
     "ARF",
     "ADWINBagging",
     "AdaBoost",
 ]
 
-classifiers = ensemble_comparison
+domain_ensemble = [
+    "OvR-DA",
+    "Bagging OvR-DA",
+    "SRP",
+    "ARF",
+    "ADWINBAgging",
+    "AdaBoost"
+]
+
+classifiers = onevall_models
+domain = domain_ova
+
+replace_dict = dict(zip(classifiers, domain))
 
 
 number_of_classes = [5, 10, 15]
@@ -68,6 +99,8 @@ for metric in metrics:
             title = "Drifted class G-Mean"
         else:
             title = metric.title()
+        group.replace({"classifier": replace_dict}, inplace=True)
+        group[metric.lower()] = group.groupby("classifier")[metric.lower()].transform(lambda x: x.rolling(10, 1).mean())
         plot = (
             alt.Chart(group, height=200, width=200)
             .mark_line(interpolate="monotone")
@@ -124,4 +157,4 @@ for metric in metrics:
         else:
             file_metric = metric
 
-        plot.save("ensemble/{}_{}.pdf".format(file_metric, file_config))
+        plot.save("onevall/{}_{}.pdf".format(file_metric, file_config))
